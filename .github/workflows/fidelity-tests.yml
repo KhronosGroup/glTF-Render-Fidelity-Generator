@@ -1,0 +1,30 @@
+name: Fidelity tests
+
+on: pull_request
+
+jobs:
+  compare_renders:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
+        submodules: recursive
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+
+    - name: NPM install
+      run: npm ci
+
+    - name: Build packages
+      run: |
+       npm run build
+
+    - name: Fidelity tests
+      uses: GabrielBB/xvfb-action@v1.0
+      with:
+        run: npm run test -- --quiet
