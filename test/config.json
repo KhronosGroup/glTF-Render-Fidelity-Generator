@@ -1666,7 +1666,8 @@
       "name": "khronos-CubeVisibility",
       "model": "../../../glTF-Sample-Assets/Models/CubeVisibility/glTF/CubeVisibility.gltf",
       "exclude": [
-        "babylon"
+        "babylon",
+        "gltf-sample-viewer"
       ],
       "orbit": {
         "radius": 5.47,
@@ -1850,7 +1851,8 @@
       "name": "khronos-LightVisibility",
       "model": "../../../glTF-Sample-Assets/Models/LightVisibility/glTF/LightVisibility.gltf",
       "exclude": [
-        "babylon"
+        "babylon",
+        "gltf-sample-viewer"
       ],
       "orbit": {
         "radius": 3.73,
