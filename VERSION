@@ -1,0 +1,7 @@
+commit 5eb9669fe83d33c9cd13fbcd61a6b775776b3163
+Author: Khronos Group Web Services <webservices@khronosgroup.org>
+Date:   Tue Oct 6 15:27:07 2026 -0400
+
+    Merge pull request #5 from KhronosGroup/add-contributing-file
+    
+    Add CONTRIBUTING.md with CLA and AI text
