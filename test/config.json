@@ -1,8 +1,8 @@
 {
   "renderers": [
     {
-      "name": "model-viewer",
-      "description": "<model-viewer>"
+      "name": "three",
+      "description": "three.js r185"
     },
     {
       "name": "filament",
@@ -224,7 +224,7 @@
         "width": 550
       },
       "exclude": [
-        "model-viewer"
+        "three"
       ]
     },
     {
@@ -465,7 +465,7 @@
         "radius": 0
       },
       "exclude": [
-        "model-viewer",
+        "three",
         "stellar",
         "three-gpu-pathtracer"
       ]
@@ -544,7 +544,7 @@
       },
       "renderSkybox": true,
       "exclude": [
-        "model-viewer",
+        "three",
         "stellar"
       ]
     },
@@ -626,7 +626,7 @@
         "radius": 22.00
       },
       "exclude": [
-        "model-viewer",
+        "three",
         "vray"
       ]
     },
@@ -765,7 +765,7 @@
       "exclude": [
         "stellar",
         "vray",
-        "model-viewer",
+        "three",
         "three-gpu-pathtracer"
       ]
     },
