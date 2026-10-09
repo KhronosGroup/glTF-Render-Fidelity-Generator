@@ -49,13 +49,13 @@ async function main() {
               type: 'string',
               alias: 'r',
               description: 'Name of web-based renderer to test',
-              default: 'model-viewer',
+              default: 'three',
               choices: [
+                'three',
                 'filament',
                 'babylon',
                 'gltf-sample-viewer',
-                'three-gpu-renderer',
-                'model-viewer'
+                'three-gpu-pathtracer'
               ]
             },
             'scenario': {

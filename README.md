@@ -16,7 +16,7 @@ Command                         | Description
 ------------------------------- | -----------
 `npm run build`                 | Build artifacts required to run testing and review tools
 `npm run clean`                 | Deletes all build artifacts
-`npm run test`                  | Run a render fidelity check comparing `<model-viewer>` to other renderers
+`npm run test`                  | Run a render fidelity check comparing `three.js` to other renderers
 `npm run render-goldens`        | Render the "golden" images for all renderers
 
 ### Fidelity Test CLI
@@ -26,7 +26,7 @@ For `npm run test`, we support these command line options:
 Command            | Default             | Description
 --------------------|----------- | -----------
   -c, --config      |  | Path to configuration json.
-  -r, --renderer    | model-viewer | The renderer to fidelity test, must be a web-based renderer.
+  -r, --renderer    | three | The renderer to fidelity test, must be a web-based renderer.
   -s, --scenario    |  | Limit to specific scenarios. This now also allows you to specify multiple scenarios in the whitelist.  You can use a full name or a partial name of scenarios and it will match against all that contain that scenario substring.
   -p, --port        | 9040  | Port for web server.
   -d, --dry-run      | false | Lists which images would be rendered but doesn't render.  Useful when trying to figure out which tests will run given that command line.
@@ -59,7 +59,7 @@ Command            | Default             | Description
 To run a subset of renders or scenarios do something like this:
 
 ```
-% npm run render-goldens -- --renderer=filament --renderer=model-viewer --scenario=clearcoat -q 
+% npm run render-goldens -- --renderer=filament --renderer=three --scenario=clearcoat -q 
 ```
 
 *NOTE: In the above example, the `--` is required to separate the arguments to `npm run render-goldens` from the arguments to the script itself.*
