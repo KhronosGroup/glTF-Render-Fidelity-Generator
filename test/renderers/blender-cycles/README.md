@@ -27,7 +27,7 @@ blender -b --factory-startup -noaudio -P test/renderers/blender-cycles/render.py
 
 ## Render Settings
 
-- `128` samples
+- `128` samples (adaptive sampling disabled)
 - `OpenImage Denoiser` is enabled
 - Exports a `temp.exr` (32bit ZIP codec) to the output dir
 - The EXR is exported in the Standard color space and then converted to ACES using PILLOW.

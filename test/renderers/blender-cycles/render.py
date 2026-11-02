@@ -245,7 +245,7 @@ def main():
     bpy.context.scene.render.engine = "CYCLES"
     bpy.context.scene.cycles.device = "GPU"
     bpy.context.scene.cycles.samples = 128
-    bpy.context.scene.cycles.use_adaptive_sampling = True
+    bpy.context.scene.cycles.use_adaptive_sampling = False
     bpy.context.scene.cycles.use_denoising = True
     # bpy.context.scene.cycles.time_limit = 30 #30 seconds
 

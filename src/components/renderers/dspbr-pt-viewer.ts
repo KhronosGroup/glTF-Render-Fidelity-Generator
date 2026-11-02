@@ -20,7 +20,7 @@ import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js'
 import {ScenarioConfig} from '../../common.js';
 
-const DEFAULT_NUM_SAMPLES = 64;
+const DEFAULT_NUM_SAMPLES = 128;
 
 const $canvas = Symbol('canvas');
 const $viewport = Symbol('viewport');

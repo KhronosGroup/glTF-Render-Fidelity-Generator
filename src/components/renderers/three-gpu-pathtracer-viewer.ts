@@ -239,7 +239,7 @@ export class ThreePathTracerViewer extends LitElement {
 
     this[$updateSize]();
 
-    const MAX_SAMPLES = 64;
+    const MAX_SAMPLES = 128;
     let eventBroadcast = false;
     renderer.setAnimationLoop(() => {
       const camera = this[$camera];
