@@ -198,9 +198,9 @@ h2 {
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 544px;
   align-items: center;
-  flex-wrap: nowrap;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .screenshot {
