@@ -54,7 +54,7 @@
       "name": "blender-cycles",
       "description": "Blender's Cycles render engine",
       "command": {
-        "executable": "blender",
+        "executable": "C:\\Users\\Phasmatic\\Documents\\Tools\\blender-5.2.2-windows-x64\\blender-5.2.2-windows-x64\\blender",
         "args": [
           "-b",
           "--factory-startup",
@@ -224,7 +224,6 @@
         "width": 620
       },
       "exclude": [
-        "three-gpu-pathtracer",
         "stellar",
         "vray"
       ]
@@ -333,8 +332,7 @@
       },
       "exclude": [
         "stellar",
-        "vray",
-        "three-gpu-pathtracer"
+        "vray"
       ]
     },
     {
@@ -444,8 +442,7 @@
         "radius": 0.5
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -489,8 +486,7 @@
       },
       "exclude": [
         "model-viewer",
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -547,10 +543,7 @@
         "radius": 12
       },
       "exclude": [
-        "stellar",
-        "babylon",
-        "gltf-sample-viewer",
-        "three-gpu-pathtracer"
+        "stellar"
       ],
       "renderSkybox": true
     },
@@ -618,7 +611,6 @@
         "height": 700
       },
       "exclude": [
-        "three-gpu-pathtracer",
         "vray"
       ]
     },
@@ -635,8 +627,7 @@
         "y": -0.09
       },
       "exclude": [
-        "vray",
-        "three-gpu-pathtracer"
+        "vray"
       ]
     },
     {
@@ -709,8 +700,7 @@
         "radius": 4.25
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -720,8 +710,7 @@
         "radius": 4.25
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -788,8 +777,7 @@
       "exclude": [
         "stellar",
         "vray",
-        "model-viewer",
-        "three-gpu-pathtracer"
+        "model-viewer"
       ]
     },
     {
@@ -800,8 +788,7 @@
       },
       "exclude": [
         "stellar",
-        "vray",
-        "three-gpu-pathtracer"
+        "vray"
       ]
     },
     {
@@ -815,8 +802,7 @@
       },
       "exclude": [
         "stellar",
-        "vray",
-        "three-gpu-pathtracer"
+        "vray"
       ]
     },
     {
@@ -831,7 +817,6 @@
       },
       "exclude": [
         "stellar",
-        "three-gpu-pathtracer",
         "vray"
       ]
     },
@@ -977,8 +962,7 @@
         "radius": 1.5
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1002,8 +986,7 @@
         "radius": 2.38
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1055,8 +1038,7 @@
         "width": 400
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1094,8 +1076,7 @@
         "radius": 4.25
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1125,8 +1106,7 @@
         "radius": 3
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1140,8 +1120,7 @@
         "radius": 3.5
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1155,8 +1134,7 @@
         "radius": 9
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1200,8 +1178,7 @@
         "radius": 1.5
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1215,8 +1192,7 @@
         "radius": 1.5
       },
       "exclude": [
-        "stellar",
-        "three-gpu-pathtracer"
+        "stellar"
       ]
     },
     {
@@ -1227,7 +1203,6 @@
       },
       "exclude": [
         "stellar",
-        "three-gpu-pathtracer",
         "vray"
       ]
     },
@@ -1269,9 +1244,6 @@
       "dimensions": {
         "width": 1024,
         "height": 600
-      },
-      "pt": {
-        "numSamples": 64
       }
     },
     {
@@ -1758,7 +1730,10 @@
       "dimensions": {
         "width": 1024,
         "height": 640
-      }
+      },
+      "exclude": [
+        "rhodonite"
+      ]
     },
     {
       "name": "DirectionalLightTest",
