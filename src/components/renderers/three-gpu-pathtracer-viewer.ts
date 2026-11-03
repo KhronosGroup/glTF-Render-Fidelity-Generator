@@ -16,7 +16,7 @@
 import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 //import {ACESFilmicToneMapping, Box3, BufferAttribute, CustomBlending, DirectionalLight, Group, MathUtils, Mesh, MeshBasicMaterial, Object3D, PerspectiveCamera, Sphere, WebGLRenderer} from 'three';
-import {ACESFilmicToneMapping, Box3, BufferAttribute, CustomBlending, DirectionalLight, Group, MathUtils, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, PerspectiveCamera, Sphere, WebGLRenderer} from 'three';
+import {ACESFilmicToneMapping, Box3, BufferAttribute, CustomBlending, DataTexture, DirectionalLight, EquirectangularReflectionMapping, FloatType, Group, ImageLoader, LinearFilter, LinearSRGBColorSpace, MathUtils, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, PerspectiveCamera, RGBAFormat, Sphere, Texture, WebGLRenderer} from 'three';
 import {PathTracingRenderer, PathTracingSceneGenerator, PhysicalPathTracingMaterial} from 'three-gpu-pathtracer';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import * as MikkTSpace from 'three/examples/jsm/libs/mikktspace.module.js';
@@ -30,6 +30,7 @@ import {ScenarioConfig} from '../../common.js';
 const $initialize = Symbol('initialize');
 const $updateScenario = Symbol('updateScenario');
 const $updateSize = Symbol('updateSize');
+const $loadEnvironment = Symbol('loadEnvironment');
 const $canvas = Symbol('canvas');
 const $renderer = Symbol('renderer');
 const $pathtracer = Symbol('path tracer');
@@ -93,6 +94,50 @@ export class ThreePathTracerViewer extends LitElement {
     });
   }
 
+  private async[$loadEnvironment](url: string): Promise<Texture> {
+    if (/\.hdr$/i.test(url)) {
+      return new HDRLoader().loadAsync(url);
+    }
+
+    // The path tracer samples the environment from its raw pixel data, so
+    // low-dynamic-range images (e.g. .jpg/.png) are decoded into a linear
+    // floating point texture rather than loaded as an image texture.
+    const image = await new ImageLoader().loadAsync(url);
+    const {width, height} = image;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d')!;
+    context.drawImage(image, 0, 0);
+    const {data: pixels} = context.getImageData(0, 0, width, height);
+
+    const srgbToLinear = new Float32Array(256);
+    for (let i = 0; i < 256; i++) {
+      const c = i / 255;
+      srgbToLinear[i] =
+          c < 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    const data = new Float32Array(width * height * 4);
+    for (let i = 0; i < data.length; i += 4) {
+      data[i] = srgbToLinear[pixels[i]];
+      data[i + 1] = srgbToLinear[pixels[i + 1]];
+      data[i + 2] = srgbToLinear[pixels[i + 2]];
+      data[i + 3] = 1;
+    }
+
+    const texture = new DataTexture(data, width, height, RGBAFormat, FloatType);
+    texture.mapping = EquirectangularReflectionMapping;
+    texture.colorSpace = LinearSRGBColorSpace;
+    texture.minFilter = LinearFilter;
+    texture.magFilter = LinearFilter;
+    texture.generateMipmaps = false;
+    // Rows are stored top first, matching the layout HDRLoader produces
+    texture.flipY = true;
+    texture.needsUpdate = true;
+    return texture;
+  }
 
   private async[$updateScenario](scenario: ScenarioConfig) {
     // call initialize here instead of inside constructor because in lit
@@ -123,7 +168,7 @@ export class ThreePathTracerViewer extends LitElement {
     renderer.clear();
 
     // load assets
-    const hdr = await new HDRLoader().loadAsync(lighting);
+    const hdr = await this[$loadEnvironment](lighting);
     const gltf = await new GLTFLoader().loadAsync(model);
 
     // remove directional light parents to replicate issue with light targets

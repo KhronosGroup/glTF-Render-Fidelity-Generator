@@ -16,6 +16,7 @@ const $view = Symbol('view');
 const $state = Symbol('state');
 const $resourceLoader = Symbol('resourceLoader');
 const $degToRadians = Symbol('degToRadians');
+const $loadEnvironmentFile = Symbol('loadEnvironmentFile');
 
 @customElement('gltf-sample-viewer')
 export class GltfSampleViewer extends LitElement {
@@ -85,8 +86,8 @@ export class GltfSampleViewer extends LitElement {
 
     this[$state].renderingParameters.environmentRotation = 0;
 
-    this[$state].environment =
-        await this[$resourceLoader].loadEnvironment(scenario.lighting, luts);
+    this[$state].environment = await this[$resourceLoader].loadEnvironment(
+        await this[$loadEnvironmentFile](scenario.lighting), luts);
 
     this[$state].renderingParameters.renderEnvironmentMap =
         scenario.renderSkybox;
@@ -131,5 +132,59 @@ export class GltfSampleViewer extends LitElement {
 
   private[$degToRadians](degree: number) {
     return Math.PI * (degree / 180);
+  }
+
+  private async[$loadEnvironmentFile](url: string):
+      Promise<string|ArrayBuffer> {
+    if (/\.hdr$/i.test(url)) {
+      return url;
+    }
+
+    // The resource loader can only parse Radiance files, so low-dynamic-range
+    // images (e.g. .jpg/.png) are re-encoded as an uncompressed in-memory one.
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    const {naturalWidth: width, naturalHeight: height} = image;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d')!;
+    context.drawImage(image, 0, 0);
+    const {data: pixels} = context.getImageData(0, 0, width, height);
+
+    const srgbToLinear = new Float32Array(256);
+    for (let i = 0; i < 256; i++) {
+      const c = i / 255;
+      srgbToLinear[i] =
+          c < 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    const header = new TextEncoder().encode(
+        `#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y ${height} +X ${width}\n`);
+    const file = new Uint8Array(header.length + width * height * 4);
+    file.set(header);
+
+    const rgbe = file.subarray(header.length);
+    for (let i = 0; i < rgbe.length; i += 4) {
+      const r = srgbToLinear[pixels[i]];
+      const g = srgbToLinear[pixels[i + 1]];
+      const b = srgbToLinear[pixels[i + 2]];
+      const max = Math.max(r, g, b);
+      if (max === 0) {
+        continue;
+      }
+
+      // Shared exponent such that the largest channel uses the full byte range
+      const exponent = Math.floor(Math.log2(max)) + 1;
+      const scale = Math.pow(2, 8 - exponent);
+      rgbe[i] = Math.min(Math.round(r * scale), 255);
+      rgbe[i + 1] = Math.min(Math.round(g * scale), 255);
+      rgbe[i + 2] = Math.min(Math.round(b * scale), 255);
+      rgbe[i + 3] = exponent + 128;
+    }
+
+    return file.buffer;
   }
 }
