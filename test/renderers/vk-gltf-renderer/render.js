@@ -3,7 +3,9 @@
 // {"scenario": {...}, "outputFile": "..."}
 
 import {spawnSync} from 'child_process';
+import {readFileSync, writeFileSync} from 'fs';
 import {dirname, join, resolve} from 'path';
+import {PNG} from 'pngjs';
 import {fileURLToPath} from 'url';
 
 const RENDERER_DIR = dirname(fileURLToPath(import.meta.url));
@@ -90,6 +92,16 @@ const result = spawnSync(EXECUTABLE, args, {stdio: 'inherit'});
 if (result.error != null) {
   console.error(result.error);
   process.exit(1);
+}
+
+// The path tracer writes zero alpha wherever a primary ray misses the scene,
+// even though the environment is in the color channels. Make the skybox visible.
+if (result.status === 0 && scenario.renderSkybox) {
+  const png = PNG.sync.read(readFileSync(outputFile));
+  for (let i = 3; i < png.data.length; i += 4) {
+    png.data[i] = 255;
+  }
+  writeFileSync(outputFile, PNG.sync.write(png));
 }
 
 process.exit(result.status != null ? result.status : 1);
