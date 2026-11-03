@@ -205,8 +205,9 @@ export class ThreeViewer extends LitElement {
     box.getBoundingSphere(sphere);
     const radius = Math.max(orbit.radius, sphere.radius, 1e-5);
 
+    // A radius of 0 would discard the orbit angles, leaving lookAt degenerate
     camera.position.setFromSphericalCoords(
-        orbit.radius,
+        Math.max(orbit.radius, 1e-5),
         MathUtils.DEG2RAD * orbit.phi,
         MathUtils.DEG2RAD * orbit.theta);
     camera.lookAt(0, 0, 0);
