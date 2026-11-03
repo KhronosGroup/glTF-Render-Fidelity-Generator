@@ -75,6 +75,7 @@ export class RhodoniteViewer extends LitElement {
       }),
       loadEnvironment(engine, resolveUrl(scenario.lighting)),
     ]);
+    fitClipPlanesToModel(cameraEntity, mainExpression);
 
     const pipeline = new Rn.ForwardRenderPipeline(engine);
     await pipeline.setup(width, height, {isBloom: false, isShadow: false});
@@ -156,6 +157,32 @@ function createCamera(engine: Rn.Engine, scenario: ScenarioConfig) {
   cameraComponent.aspect = dimensions.width / dimensions.height;
 
   return {cameraEntity, cameraComponent};
+}
+
+/**
+ * The orbit radius says nothing about the model's size (it is 0 for cameras
+ * placed inside a scene), so push the far plane out to contain the whole model.
+ */
+function fitClipPlanesToModel(
+    cameraEntity: Rn.ICameraEntity, expression: Rn.Expression) {
+  const cameraComponent = cameraEntity.getCamera();
+  const eye = cameraEntity.getTransform().localPosition;
+
+  let far = cameraComponent.zFar;
+  for (const renderPass of expression.renderPasses) {
+    for (const sceneGraph of renderPass.sceneTopLevelGraphComponents) {
+      const aabb = sceneGraph.calcWorldMergedAABB();
+      if (aabb.isVanilla()) {
+        continue;
+      }
+      const {x, y, z} = aabb.centerPoint;
+      const distance = Math.hypot(x - eye.x, y - eye.y, z - eye.z);
+      far = Math.max(far, 2 * (distance + aabb.lengthCenterToCorner));
+    }
+  }
+
+  cameraComponent.zNear = far / 1000;
+  cameraComponent.zFar = far;
 }
 
 interface Environment {
