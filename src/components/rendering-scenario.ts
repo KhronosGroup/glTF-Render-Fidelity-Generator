@@ -94,12 +94,12 @@ export class RenderingScenario extends LitElement {
             .map(
                 (golden, index) => html`
               <div class="screenshot">
-                <header>
-                  <h2>${golden.description}</h2>
-                </header>
                 <div class="check"></div>
                 <img data-id="${this.name} ${golden.name}"
                     style="width:${width}px" src="${basePath}/${golden.file}">
+                <header>
+                  <h2>${golden.description}</h2>
+                </header>
                   <div class = "metrics">
                     ${
                     index == 0 || this.analysis == null ?
@@ -172,10 +172,6 @@ h1 {
 
 .screenshot > header {
   display: block;
-  position: absolute;
-  width: 100%;
-  bottom: 2em;
-  left: 0;
   text-align: center;
   pointer-events: none;
 }
@@ -198,7 +194,7 @@ h2 {
   display: flex;
   flex-direction: row;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-wrap: wrap;
 }
