@@ -1887,6 +1887,18 @@
       }
     },
     {
+      "name": "khronos-interactivity-MiniChess",
+      "model": "../../../glTF-Test-Assets-Interactivity/Models/MiniChess/glTF-Binary/mini-chess.glb",
+      "target": {
+        "y": 0.13
+      },
+      "orbit": {
+        "radius": 18,
+        "theta": 0,
+        "phi": 45
+      }
+    },
+    {
       "name": "khronos-interactivity-PerformanceTest",
       "model": "../../../glTF-Test-Assets-Interactivity/Models/PerformanceTest/glTF/PerformanceTest.gltf",
       "target": {
