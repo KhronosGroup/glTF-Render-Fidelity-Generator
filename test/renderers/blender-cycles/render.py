@@ -145,7 +145,9 @@ def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
 
     # Import the GLTF model
-    bpy.ops.import_scene.gltf(filepath=scenePath)
+    # Skin meshes into the default pose so that the resting pose below matches
+    # the glTF's default node transforms
+    bpy.ops.import_scene.gltf(filepath=scenePath, guess_original_bind_pose=False)
 
     # reset armatures to resting pose instead of frame 1 pose
     bpy.ops.object.select_all(action="DESELECT")
