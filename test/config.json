@@ -103,7 +103,6 @@
         "y": 0.11
       },
       "exclude": [
-        "babylon",
         "vray"
       ]
     },
