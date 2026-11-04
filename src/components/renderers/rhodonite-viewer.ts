@@ -60,6 +60,8 @@ export class RhodoniteViewer extends LitElement {
       });
     }
     const engine = this[$engine]!;
+    // Render the default pose rather than the animation's first frame
+    Rn.AnimationComponent.setIsAnimating(engine, false);
 
     const {width, height} = this[$updateSize]();
 
