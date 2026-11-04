@@ -244,10 +244,7 @@
       "dimensions": {
         "height": 800,
         "width": 550
-      },
-      "exclude": [
-        "model-viewer"
-      ]
+      }
     },
     {
       "name": "khronos-MosquitoInAmber",
@@ -485,7 +482,6 @@
         "radius": 0
       },
       "exclude": [
-        "model-viewer",
         "stellar"
       ]
     },
@@ -560,7 +556,6 @@
       },
       "renderSkybox": true,
       "exclude": [
-        "model-viewer",
         "stellar"
       ]
     },
@@ -640,7 +635,6 @@
         "radius": 22.00
       },
       "exclude": [
-        "model-viewer",
         "vray"
       ]
     },
@@ -776,8 +770,7 @@
       },
       "exclude": [
         "stellar",
-        "vray",
-        "model-viewer"
+        "vray"
       ]
     },
     {
