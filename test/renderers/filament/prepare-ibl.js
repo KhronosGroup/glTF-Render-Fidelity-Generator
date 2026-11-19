@@ -87,8 +87,7 @@ mkdirSync(IBL_DIR, {recursive: true});
 
 let cmgenInputFile = resolve(iblInputFile);
 
-// cmgen can't decode JPEGs, so convert them to PNG first. jpeg-js decodes to
-// RGBA but cmgen only accepts 3 channels, so the PNG is written as RGB.
+// cmgen can't decode JPEGs, so convert them to PNG first.
 if (iblExtension === 'jpg' || iblExtension === 'jpeg') {
   const pngFile = join(IBL_DIR, `${iblBasename}.png`);
   await sharp(cmgenInputFile, {limitInputPixels: false})
