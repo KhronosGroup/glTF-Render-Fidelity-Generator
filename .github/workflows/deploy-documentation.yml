@@ -17,9 +17,19 @@ jobs:
         submodules: recursive
 
     - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    # dspbr-pt and glTF-Sample-Renderer are file: dependencies, so they must
+    # be cloned before npm ci
+    - name: Fetch renderers
+      run: node scripts/fetch-renderers.js
 
     - name: NPM install
       run: npm ci
+
+    - name: Fetch renderer runtimes
+      run: npm run setup
 
     - name: Build packages
       run: npm run build
@@ -31,7 +41,12 @@ jobs:
         run: npm run test
 
     - name: Stage documentation artifacts
-      run: ./scripts/ci-before-deploy.sh
+      run: |
+        mkdir -p pages/comparison
+        mv test/results pages/comparison/
+        cp test/results-viewer.html pages/comparison/index.html
+        cp -r dist glTF-Sample-Assets pages/
+        git log -n 1 > pages/VERSION
 
     - name: Deploy to Github Pages
       uses: peaceiris/actions-gh-pages@v4
