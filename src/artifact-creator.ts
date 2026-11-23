@@ -395,7 +395,14 @@ export class ArtifactCreator {
 
     let evaluateError: string|null;
     try {
-      await Promise.race([page.goto(url), pageFailure]);
+      const response = await Promise.race([page.goto(url), pageFailure]);
+
+      // goto() resolves on HTTP errors too, and an error page never becomes
+      // ready, so without this the capture would wait forever
+      if (response != null && !response.ok()) {
+        throw new Error(`HTTP ${response.status()} loading renderer page ${
+            this.baseUrl}`);
+      }
 
       console.log(
           `🖌  Rendering ${scenarioName} with ${rendererConfig.description}`);

@@ -230,6 +230,20 @@ async function main() {
         command: rendererCommand
       } = renderer;
 
+      // skip it when it is not installed
+      // instead of waiting on a 404 that never becomes ready
+      if (rendererCommand == null &&
+          (rendererWhitelist == null || rendererWhitelist.has(rendererName))) {
+        const rendererPage =
+            join(renderersDirectory, rendererName, 'index.html');
+        try {
+          await fs.access(rendererPage);
+        } catch (error) {
+          warn(`Skipping ${rendererName}: ${rendererPage} not found`);
+          continue;
+        }
+      }
+
       const screenshotCreator = new ArtifactCreator(
           config,
           rootDirectory,
