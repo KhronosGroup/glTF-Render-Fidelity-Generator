@@ -1,23 +1,22 @@
 # Render fidelity tools
 
-This package contains tools and testing processes to ensure high-fidelity 3D model rendering as well as compare rendering qualities across renderers. See the public fidelity comparisons [page](https://github.khronos.org/glTF-Render-Fidelity/comparison/), or `test/results-viewer.html` if running this package locally.
+This package contains tools and testing processes to ensure high-fidelity 3D model rendering as well as compare rendering qualities across renderers. See `test/results-viewer.html` if running this package locally.
 
 ## Development
 
-In order to run `npm run render-goldens`, you must have `imagemagick` installed.
+The repository has been tested on Windows and Linux systems.
 
-On macOS, you can install `imagemagick` with homebrew: `brew install imagemagick`
-
-On Debian/Ubuntu/Pop!_OS you can install `imagemagick` with `apt`: `sudo apt install imagemagick`
-
-The following commands are available when developing modelviewer.dev:
+The following commands are available when working with the repository:
 
 Command                         | Description
 ------------------------------- | -----------
+`npm run setup`                 | Fetch Filament, model-viewer and the other renderers
 `npm run build`                 | Build artifacts required to run testing and review tools
 `npm run clean`                 | Deletes all build artifacts
 `npm run test`                  | Run a render fidelity check comparing `gltf-sample-viewer` to other renderers
 `npm run render-goldens`        | Render the "golden" images for all renderers
+`npm run fetch:<name>`          | Fetch a single dependency: `renderers`, `filament` or `model-viewer`
+`npm run build:<name>`          | Build a single renderer: `gltf-sample-renderer`, `dspbr-pt` or `vk_gltf_renderer`
 
 ### Fidelity Test CLI
 
@@ -49,12 +48,30 @@ For `npm run render-goldens`, we support these command line options:
 Command            | Default             | Description
 --------------------|----------- | -----------
   -c, --config      |  | Path to configuration json.
-  -r, --renderer    |  | Limit to specific renderers. This now allows you to specify multiple renderers in the whitelist, rather than only one.
+  -r, --renderer    |  | Limit to specific renderers, by label (see [Supported renderers](#supported-renderers)). This now allows you to specify multiple renderers in the whitelist, rather than only one.
   -s, --scenario    |  | Limit to specific scenarios. This now also allows you to specify multiple scenarios in the whitelist.  You can use a full name or a partial name of scenarios and it will match against all that contain that scenario substring.
   -p, --port        | 9040  | Port for web server.
   -m, --missing-only | false | Only render if an output image is missing.  Very useful when adding new tests.
   -d, --dry-run      | false | Lists which images would be rendered but doesn't render.  Useful when trying to figure out which tests will run given that command line.
   -q, --quiet        | false | Hide the puppeteer controlled browser.  This can allow you to work on the computer while it is running in the background.
+
+#### Supported renderers
+
+Name                              | Label                  | Rendering Type | Platform
+--------------------------------- | ---------------------- | -------------- | --------
+gltf-sample-viewer                | `gltf-sample-viewer`   | Real-Time      | Web
+`<model-viewer>`                  | `model-viewer`         | Real-Time      | Web
+three.js                          | `three`                | Real-Time      | Web
+filament.js                       | `filament`             | Real-Time      | Web, Android
+babylon.js                        | `babylon`              | Real-Time      | Web
+RhodoniteTS                       | `rhodonite`            | Real-Time      | Web
+Phasma Viewer                     | `phasma-viewer`        | Real-Time      | Web
+Enterprise PBR WebGL Path Tracer  | `dspbr-pt`             | Path Tracing   | Web
+three-gpu-pathtracer              | `three-gpu-pathtracer` | Path Tracing   | Web
+Dassault STELLAR                  | `stellar`              | Path Tracing   | Windows, Linux
+Chaos Group V-Ray (via vray_gltf) | `vray`                 | Path Tracing   | Linux, Windows, MacOS
+Blender Cycles                    | `blender-cycles`       | Path Tracing   | Linux, Windows, MacOS
+Vulkan RTX Path Tracer            | `vk-gltf-renderer`     | Path Tracing   | Linux, Windows, MacOS
 
 To run a subset of renders or scenarios do something like this:
 
