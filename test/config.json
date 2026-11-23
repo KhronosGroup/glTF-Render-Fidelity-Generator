@@ -13,6 +13,10 @@
       "description": "<model-viewer>"
     },
     {
+      "name": "phasma-viewer",
+      "description": "Phasma Viewer"
+    },
+    {
       "name": "filament",
       "description": "Filament",
       "scripts": {
