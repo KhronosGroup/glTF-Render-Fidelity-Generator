@@ -18,6 +18,8 @@
     "clean": "rimraf dist lib test/results test/renderers/filament/cmgen test/renderers/filament/cmgen.exe test/renderers/filament/cmgen.version test/renderers/filament/cmgen-src test/renderers/filament/ktx test/renderers/filament/runtime test/renderers/model-viewer/runtime"
   },
   "contributors": [
+    "Nikolaos Vitsas <nick@phasmatic.com>",
+    "Anastasios Gkaravelis <anastasios@phasmatic.com>",
     "Chris Joel <cdata@google.com>",
     "Emmett Lalish <elalish@google.com>",
     "Jiaxin Sun <mrfrog@google.com>"
