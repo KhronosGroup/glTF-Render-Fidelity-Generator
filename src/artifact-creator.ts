@@ -265,12 +265,14 @@ export class ArtifactCreator {
 
           fidelityRegressionResults.errors.push(message);
         }
-
-        analyzedScenarios.push({
-          ...scenario,
-          exclude: [...(scenario.exclude ?? []), ...missingGoldens]
-        });
       }
+
+      // record the scenario even on a dry run so the results viewer can show
+      // the golden-vs-golden comparisons
+      analyzedScenarios.push({
+        ...scenario,
+        exclude: [...(scenario.exclude ?? []), ...missingGoldens]
+      });
     }
 
 
