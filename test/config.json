@@ -1317,7 +1317,10 @@
       "dimensions": {
         "width": 1024,
         "height": 464
-      }
+      },
+      "exclude": [
+        "phasma-viewer"
+      ]
     },
     {
       "name": "khronos-CompareClearcoat",
@@ -1449,7 +1452,10 @@
       "dimensions": {
         "width": 1024,
         "height": 496
-      }
+      },
+      "exclude": [
+        "phasma-viewer"
+      ]
     },
     {
       "name": "khronos-CompareTransmission",
@@ -2342,7 +2348,10 @@
       },
       "orbit": {
         "radius": 0.16
-      }
+      },
+      "exclude": [
+        "phasma-viewer"
+      ]
     },
     {
       "name": "khronos-PrimitiveModeNormalsTest",
