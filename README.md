@@ -18,6 +18,27 @@ Command                         | Description
 `npm run fetch:<name>`          | Fetch a single dependency: `renderers`, `filament` or `model-viewer`
 `npm run build:<name>`          | Build a single renderer: `gltf-sample-renderer`, `dspbr-pt` or `vk_gltf_renderer`
 
+## Setup
+
+```
+git clone git@github.com:KhronosGroup/glTF-Render-Fidelity-Generator.git
+cd glTF-Render-Fidelity-Generator
+git submodule update --init --recursive
+```
+
+The last two commands download several MBs of raw data, including the reference Sample Assets (`.glb`) and the reference renders (`.webp`).
+
+Then, execute these steps to create a development environment with the desired renderers. Some native renderers (e.g. Blender) expect to find the executable already installed on the system.
+
+1. `npm i`
+2. `npm run setup`
+3. *(optional)* `npm run build:vk_gltf_renderer -- --dlss --optix`
+4. *(optional)* `npm run build:dspbr-pt`
+5. *(optional)* `npm run fetch:model-viewer`
+6. *(optional)* `npm run fetch:filament`
+7. `npm run build:gltf-sample-renderer`
+8. `npm run build`
+
 ### Fidelity Test CLI
 
 For `npm run test`, we support these command line options:
