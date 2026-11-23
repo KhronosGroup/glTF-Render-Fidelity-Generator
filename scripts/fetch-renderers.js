@@ -17,7 +17,7 @@
 // Build commands are in package.json.
 
 import {spawnSync} from 'child_process';
-import {existsSync} from 'fs';
+import {existsSync, rmSync} from 'fs';
 import {dirname, join} from 'path';
 import {fileURLToPath} from 'url';
 
@@ -27,18 +27,31 @@ const REPOSITORIES = [
   {
     directory: 'dspbr-pt',
     url: 'https://github.com/DassaultSystemes-Technology/dspbr-pt.git',
+    commit: '7f446e3292cfc226b244fcb2692bbf4d3f0100f7',
   },
   {
     directory: 'glTF-Sample-Renderer',
     url: 'https://github.com/KhronosGroup/glTF-Sample-Renderer.git',
+    commit: '6e8a3d1aaa6f07e9f1310a488453e21325677786',
   },
   {
     directory: 'vk_gltf_renderer',
     url: 'https://github.com/nvpro-samples/vk_gltf_renderer.git',
+    commit: '10f2de09dfa3dca04f14e485580862f17c05752f',
   },
 ];
 
-for (const {directory, url} of REPOSITORIES) {
+const git = (args, cwd) => {
+  const result = spawnSync('git', args, {cwd, stdio: 'inherit'});
+  if (result.error != null) {
+    throw result.error;
+  }
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(' ')} exited with ${result.status}`);
+  }
+};
+
+for (const {directory, url, commit} of REPOSITORIES) {
   const path = join(PACKAGE_ROOT, directory);
 
   if (existsSync(path)) {
@@ -46,27 +59,19 @@ for (const {directory, url} of REPOSITORIES) {
     continue;
   }
 
-  console.log(`🐶 Fetching ${directory} from ${url}`);
+  console.log(`🐶 Fetching ${directory} at ${commit.slice(0, 7)} from ${url}`);
 
-  const result = spawnSync(
-      'git',
-      [
-        'clone',
-        '--depth',
-        '1',
-        '--recurse-submodules',
-        '--shallow-submodules',
-        url,
-        directory,
-      ],
-      {cwd: PACKAGE_ROOT, stdio: 'inherit'});
-
-  if (result.error != null) {
-    console.error(result.error);
+  try {
+    // Fetch only the pinned commit, like a shallow clone of it
+    git(['init', '--quiet', directory], PACKAGE_ROOT);
+    git(['remote', 'add', 'origin', url], path);
+    git(['fetch', '--quiet', '--depth', '1', 'origin', commit], path);
+    git(['checkout', '--quiet', 'FETCH_HEAD'], path);
+    git(['submodule', 'update', '--init', '--recursive', '--depth', '1'], path);
+  } catch (error) {
+    console.error(error.message);
+    // Remove the partial checkout so the next run does not skip it
+    rmSync(path, {recursive: true, force: true});
     process.exit(1);
-  }
-
-  if (result.status !== 0) {
-    process.exit(result.status != null ? result.status : 1);
   }
 }

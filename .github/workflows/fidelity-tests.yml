@@ -18,14 +18,12 @@ jobs:
         node-version: '22'
 
     # dspbr-pt and glTF-Sample-Renderer are file: dependencies, so they must
-    # be cloned before npm install
+    # be cloned (at the commits pinned in the script) before npm ci
     - name: Fetch renderers
       run: node scripts/fetch-renderers.js
 
-    # npm install rather than npm ci: the renderers are cloned at their latest
-    # commit, which may not match the lockfile, and npm ci fails on a mismatch
     - name: NPM install
-      run: npm install
+      run: npm ci
 
     - name: Fetch renderer runtimes
       run: npm run setup
