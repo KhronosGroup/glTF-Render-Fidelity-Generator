@@ -1,78 +1,16 @@
-# Fidelity Testing
+# glTF Render Fidelity Testing
 
-It is very important for any 3D model renderer to strive towards producing a
-render that is at once true to the source model, aesthetically pleasing to the
-person viewing the render and as consistent as possible with other commonly
-used renderers.
+One goal of glTF is to standardize Physically-Based Rendering (PBR) materials such that you can be confident your model will appear as intended in any lighting environment in any renderer. This is a very ambitious goal, as real-time rendering at this level of quality is still very much an area of active research with improvements being made constantly. This repository demonstrates where we are on that path to convergence and highlights areas that could still use improvement. It is configured to generate reference render images for the models in the [glTF-Sample-Assets](https://github.com/KhronosGroup/glTF-Sample-Assets) and [glTF-Test-Assets-Interactivity](https://github.com/KhronosGroup/glTF-Test-Assets-Interactivity) repositories, comparing the most popular real-time web renderers as well as path tracers (a rendering technique that uses far fewer approximations than are required by real-time renderers).
 
-To that end, the `<model-viewer>` project is pursuing a line of testing that
-compares renders produced by `<model-viewer>` to selected third party reference
-model viewers, with an emphasis on revealing major inconsistencies and rendering
-errors. The goal of this testing is to improve the quality of `<model-viewer>`
-renders over time, as well as to spark discussions with the authors of other
-renderers as we seek to achieve a satisfying balance between correctness,
-beauty and consistency.
+It is very important for any 3D model renderer to strive towards producing a render that is at once true to the source model, aesthetically pleasing to the person viewing the render and as consistent as possible with other commonly used renderers. 
+
+This repository provides a unified pipeline that renders the same test scenarios with both real-time and path-traced renderers, and stores the results as golden images for fidelity comparison.
+
+The generated artifacts, are compared against the [gltf-sample-viewer](https://github.com/KhronosGroup/glTF-Sample-Renderer) renders to selected third party reference model viewers, with an emphasis on revealing major inconsistencies and rendering errors. The goal of this testing is to improve the quality of renders over time, as well as to spark discussions with the authors of other renderers as the community seeks to achieve a satisfying balance between correctness, beauty and consistency.
 
 ## Reference model viewers
 
-There are a lot of model viewers out there. Since one of the main goals of
-`<model-viewer>` is consistency, we will focus on those viewers that have
-significant levels of distribution and/or reputation. Current viewers that we
-are intend to compare to include:
-
- - [iOS Quick Look](https://developer.apple.com/arkit/gallery/)
- - [Filament glTF Viewer](https://github.com/google/filament/blob/master/samples/gltf_viewer.cpp)
- - [Khronos glTF Viewer](https://github.com/KhronosGroup/glTF-WebGL-PBR/tree/reference-viewer)
-
-## Capturing reference renders
-
-Currently, reference renders of third party model viewers are captured by hand.
-Ideally, this would be an automated process, but there are some challenges such
-as:
-
- - iOS Quick Look is a closed-source binary that only works on real iOS devices
-   (not the simulator).
-
-### iOS Quick Look
-
-iOS Quick Look is the most difficult model viewer to stage, and produces the
-most imprecise reference screenshots.
-
-The steps to create a reference screenshot are:
-
- 1. Navigate to this [Glitch](http://lopsided-motion.glitch.me/usdz.html) on an
-    iOS device.
-      - Currently, we use an iPad Air 2013. You will need to use a device with
-        the same display resolution if you wish to update existing tests.
- 2. Click the button in the top right of the model you wish to take a screenshot
-    of. This will launch Quick Look.
- 3. Adjust the model with touch input so that it is staged as desired.
-      - Note that`<model-viewer>` does not current support user-configurable
-        camera properties.
-      - Correct iOS Quick Look staging requires orbiting the camera towards
-        the lower pole and zooming-in slightly.
- 4. Take a device screenshot.
-      - Press the power button and home button at the same time on an iPad Air
-        2013
- 5. Transfer the device screenshot to a device with Photoshop or equivalent
-    and crop the screenshot to a 1536 x 1536 pixel square, with the model
-    staged at the center.
- 6. Manually compare the new screenshot staging to the staging of the screenshot
-    it replaces (if applicable).
-      - If screenshots don't line up, repeat steps 3-6 until you get a
-        satisfying result.
-
-Note that iOS Quick Look appears to use a slightly narrower field of view than
-other viewers, so many screenshots will exhibit hard dissimilarity around the
-edges.
-
-### Filament glTF Viewer
-
-Screenshots of a Filament-based glTF viewer are automatically collected daily,
-and PRs are automatically created if there are any changes.
-
-Use `npm run update-screenshots` to run the script that produces the screenshots
-yourself. 
+There are a lot of web and offline renderers out there. Since one of the main goals of glTF is to standardize Physically-Based Rendering (PBR) materials, the focus is on those viewers that have significant levels of distribution and/or reputation. However, anyone can submit a pull request and add a viewer to the comparison as long as they follow the configuration for each scenario and easily fit in the pipeline.
 
 ## Crafting new test scenarios
 
@@ -80,41 +18,43 @@ There is currently a lot of flexibility when it comes to crafting a new fidelity
 testing scenario. The critical requirements include:
 
  - The scenario can be feasibly reproduced in all of the relevant model viewers.
- - The scenario demonstrates render qualities that are not comprehensively
-   covered by existing scenarios
+ - The scenario demonstrates render qualities that are not comprehensively covered by existing scenarios
 
-As far as `<model-viewer>` is concerned, a scenario is just an HTML file that
-incorporates `<model-viewer>` with a given configuration. This HTML file will
-be loaded by a browser at test time and used to produce a screenshot for
-comparison to any configured reference renders.
+For most web renderers, each scenario is rendered im an HTML file that incorporates the viewer' s component with a given configuration. This HTML file is loaded by a browser at test time and used to produce a screenshot for comparison to any configured reference renders.
 
 The steps to produce a new scenario are:
 
- 1. Acquire or produce a glTF that is representative of what the scenario should
-    be testing.
-      - If applicable, also produce a corresponding USDZ of that model
- 2. Pick a descriptive name for the scenario (for example, `alpha-blend-litmus`)
- 3. Create a sub-directory of the [`test/fidelity`](./) folder with the same
-    name as your scenario. This will be the scenario's directory.
- 4. Add any relevant screenshots of reference viewers to the scenario's
-    directory
-      - See above in this document for advice on creating reference viewer
-        screenshots
- 5. Add an `index.html` document containing a configured `<model-viewer>`, and
-    with CSS margins removed from the `<body>`.
-      - Currently, screenshots are taken in an area measured from the top-left of
-        the document, so any margin will most likely lead to undesired results
- 6. Modify the configuration at [`test/fidelity/config.json`](./config.json) to
-    include an item under `scenarios` that corresponds to your newly created
-    scenario
-      - Be sure to specify the dimensions of the test, the set of references
-        (called "goldens") and the thresholds to test at (0, 1 and 10 are
-        recommended).
-
-Note that We have created an environment map that allows us to simulate the iOS
-Quick Look skybox in renderers that we wish to appear at least somewhat
-comparable to Quick Look: [quick_1k.png](../../examples/assets/quick_1k.png).
-
+ 1. Pick or create a glTF model that is representative of what the scenario should be testing,
+    usually from one of the asset submodules (`glTF-Sample-Assets` or `glTF-Test-Assets-Interactivity`).
+ 2. Pick a descriptive name for the scenario. By convention it is prefixed, e.g. `khronos-<ModelName>`.
+ 3. Add an entry under `scenarios` in [`test/config.json`](./config.json):
+    ```json
+    {
+      "name": "khronos-MyModel",
+      "model": "../../../glTF-Sample-Assets/Models/MyModel/glTF/MyModel.gltf",
+      "orbit": { "theta": 30, "phi": 75, "radius": 2.5 },
+      "target": { "y": 0.5 },
+      "dimensions": { "width": 1024, "height": 640 },
+      "exclude": ["stellar"]
+    }
+    ```
+      - Paths are relative to `test/renderers/<renderer>/`, hence the leading `../../../`.
+      - Only `name` and `model` are required. The defaults ([`src/config-reader.ts`](../src/config-reader.ts))
+        are: `lighting` = `environments/lightroom_14b.hdr`, a 768×768 image, `target` at the origin,
+        `orbit` with `theta` 0, `phi` 90 and `radius` 1, a 45° `verticalFoV`, and no skybox.
+      - Optional: `lighting` (path to an `.hdr`/`.jpg`), `renderSkybox`, `verticalFoV`, and `exclude`
+        (renderer labels to skip).
+      - Add a renderer to `exclude` when it cannot produce the scenario (e.g. it does not support the
+        model's extensions), rather than leaving it without a golden, so the gap is documented as intentional.
+ 4. Render the goldens. They are written to `test/goldens/<scenario>/<renderer>-golden.webp`:
+    ```
+    npm run render-goldens -- -s khronos-MyModel -m
+    ```
+    `-m` renders only the goldens that are missing.
+ 5. Check the result with a dry run, then open `test/results-viewer.html` from a local web server:
+    ```
+    npm run test -- -d -s khronos-MyModel
+    ```
 
 ## Adding CLI renderer backends
 
@@ -134,33 +74,29 @@ The `command` property of the renderer configuration allows adding external rend
 ```
 Providing an empty object will skip the renderer for image generation during `update-screenshots`, but it is still expected to provide renderings in the golden folders for image comparison and report generation.
 
-
 On execution, a stringyfied scenario configuration will automatically be attached to `args`, the list of arguments to the `executable`. Please note the additional `outputFile` property.
 
 Example configuration:
 ```json
 { 
-  "scenario": {
-    "lighting": "../../../environments/lightroom_14b.hdr",
-    "dimensions": {
-      "width": 768,
-      "height": 450
-    },
-    "target": {
-      "x": 0,
-      "y": 0.3,
-      "z": 0
-    },
-    "orbit": {
-      "theta": 0,
-      "phi": 90,
-      "radius": 1
-    },
-    "verticalFoV": 45,
-    "renderSkybox": False,
-    "name": "khronos-SheenChair",
-    "model": "../../../glTF-Sample-Assets/Models/SheenChair/glTF-Binary/SheenChair.glb"
+  "lighting": "../../../environments/lightroom_14b.hdr",
+  "dimensions": {
+    "width": 768,
+    "height": 450
   },
-  "outputFile": "./test/goldens/khronos-SheenChair/stellar-golden.png"
-}
+  "target": {
+    "x": 0,
+    "y": 0.3,
+    "z": 0
+  },
+  "orbit": {
+    "theta": 0,
+    "phi": 90,
+    "radius": 1
+  },
+  "verticalFoV": 45,
+  "renderSkybox": False,
+  "name": "khronos-SheenChair",
+  "model": "../../../glTF-Sample-Assets/Models/SheenChair/glTF-Binary/SheenChair.glb"
+},
 ```
