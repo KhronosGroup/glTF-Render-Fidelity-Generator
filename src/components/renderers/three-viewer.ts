@@ -32,7 +32,7 @@ import {ScenarioConfig} from '../../common.js';
 const DRACO_DECODER_PATH =
     'https://www.gstatic.com/draco/versioned/decoders/1.5.6/';
 const KTX2_TRANSCODER_PATH =
-    'https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/libs/basis/';
+    'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/libs/basis/';
 
 const $initialize = Symbol('initialize');
 const $updateScenario = Symbol('updateScenario');
