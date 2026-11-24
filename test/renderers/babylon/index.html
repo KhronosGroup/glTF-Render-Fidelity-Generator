@@ -43,7 +43,11 @@
          self.dispatchEvent(new CustomEvent('model-ready'));
        }
      }, { once: true });
- 
+
+     babylonViewer.addEventListener('model-error', (event) => {
+       self.dispatchEvent(new CustomEvent('model-error', { detail: event.detail }));
+     }, { once: true });
+
      babylonViewer.scenario = harness.scenario;
    });
  </script>

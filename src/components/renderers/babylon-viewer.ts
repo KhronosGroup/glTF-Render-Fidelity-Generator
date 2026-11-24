@@ -28,6 +28,7 @@ const $canvas = Symbol('canvas');
 const $engine = Symbol('engine');
 const $scene = Symbol('scene');
 const $degToRadians = Symbol('degToRadians');
+const $loadEnvironmentFile = Symbol('loadEnvironmentFile');
 
 
 @customElement('babylon-viewer')
@@ -43,7 +44,13 @@ export class BabylonViewer extends LitElement {
     this[$updateSize]();
 
     if (changedProperties.has('scenario') && this.scenario != null) {
-      this[$updateScenario](this.scenario);
+      this[$updateScenario](this.scenario).catch((error) => {
+        console.error(
+            `Babylon failed to render scenario: ${error?.stack ?? error}`);
+        // Lets the framework fail this scenario instead of waiting for it
+        this.dispatchEvent(new CustomEvent(
+            'model-error', {detail: {message: String(error?.message ?? error)}}));
+      });
     }
   }
 
@@ -152,14 +159,28 @@ export class BabylonViewer extends LitElement {
     // the size of cubemap is 256 for all other renderers
     // Also, when enable real time filter, prefilter should not be enabled at
     // the same time.
-    const environment = new HDRCubeTexture(
-        scenario.lighting,
-        this[$scene],
-        256,
-        false,
-        true,
-        false,
-        !needRealTimeFilter);
+    const environmentUrl = await this[$loadEnvironmentFile](scenario.lighting);
+    let environment!: HDRCubeTexture;
+    // Wait for the environment, so a load failure fails the scenario instead of
+    // leaving the scene never ready
+    await new Promise<void>((resolve, reject) => {
+      environment = new HDRCubeTexture(
+          environmentUrl,
+          this[$scene],
+          256,
+          false,
+          true,
+          false,
+          !needRealTimeFilter,
+          () => resolve(),
+          (message?: string, exception?: any) => reject(new Error(
+              `Failed to load environment ${scenario.lighting}: ${
+                  message ?? exception}`)));
+    }).finally(() => {
+      if (environmentUrl !== scenario.lighting) {
+        URL.revokeObjectURL(environmentUrl);
+      }
+    });
     this[$scene].environmentTexture = environment;
 
     // rotate environment for 90 deg, skybox for 270 deg to match the rotation
@@ -215,5 +236,59 @@ export class BabylonViewer extends LitElement {
 
   private[$degToRadians](degree: number) {
     return Math.PI * (degree / 180);
+  }
+
+  private async[$loadEnvironmentFile](url: string): Promise<string> {
+    if (/\.hdr$/i.test(url)) {
+      return url;
+    }
+
+    // HDRCubeTexture can only parse Radiance files, so low-dynamic-range
+    // images (e.g. .jpg/.png) are re-encoded as an uncompressed in-memory one
+    // and handed over as a blob URL.
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    const {naturalWidth: width, naturalHeight: height} = image;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d')!;
+    context.drawImage(image, 0, 0);
+    const {data: pixels} = context.getImageData(0, 0, width, height);
+
+    const srgbToLinear = new Float32Array(256);
+    for (let i = 0; i < 256; i++) {
+      const c = i / 255;
+      srgbToLinear[i] =
+          c < 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    const header = new TextEncoder().encode(
+        `#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y ${height} +X ${width}\n`);
+    const file = new Uint8Array(header.length + width * height * 4);
+    file.set(header);
+
+    const rgbe = file.subarray(header.length);
+    for (let i = 0; i < rgbe.length; i += 4) {
+      const r = srgbToLinear[pixels[i]];
+      const g = srgbToLinear[pixels[i + 1]];
+      const b = srgbToLinear[pixels[i + 2]];
+      const max = Math.max(r, g, b);
+      if (max === 0) {
+        continue;
+      }
+
+      // Shared exponent such that the largest channel uses the full byte range
+      const exponent = Math.floor(Math.log2(max)) + 1;
+      const scale = Math.pow(2, 8 - exponent);
+      rgbe[i] = Math.min(Math.round(r * scale), 255);
+      rgbe[i + 1] = Math.min(Math.round(g * scale), 255);
+      rgbe[i + 2] = Math.min(Math.round(b * scale), 255);
+      rgbe[i + 3] = exponent + 128;
+    }
+
+    return URL.createObjectURL(new Blob([file]));
   }
 }

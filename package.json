@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@actions/core": "^3.0.1",
-    "@babylonjs/core": "^9.29.0",
-    "@babylonjs/loaders": "^9.29.0",
+    "@babylonjs/core": "9.37.2",
+    "@babylonjs/loaders": "9.37.2",
     "@khronosgroup/gltf-viewer": "file:./glTF-Sample-Renderer",
     "@types/http-server": "^0.12.4",
     "@types/three": "^0.185.0",
