@@ -7,7 +7,12 @@ import {ScenarioConfig} from '../../common.js';
 
 // 'gltf-sample-renderer' is the local package at glTF-Sample-Renderer/dist
 // built with `npm run build:gltf-sample-renderer`
-const GLTF_SAMPLE_RENDERER_DIST = '../../../glTF-Sample-Renderer/dist';
+const GLTF_SAMPLE_RENDERER_DIST =
+    new URL('../../../glTF-Sample-Renderer/dist', document.baseURI).href;
+
+// The renderer's path normalisation drops leading '../' segments, which breaks
+// the page-relative paths used here, so every URL is handed over as absolute.
+const toAbsoluteUrl = (url: string) => new URL(url, document.baseURI).href;
 
 const $updateScenario = Symbol('updateScenario');
 const $updateSize = Symbol('updateSize');
@@ -60,7 +65,7 @@ export class GltfSampleViewer extends LitElement {
     }
     this[$updateSize]();
 
-    this[$state].gltf = await this[$resourceLoader].loadGltf(scenario.model);
+    this[$state].gltf = await this[$resourceLoader].loadGltf(toAbsoluteUrl(scenario.model));
 
     const defaultScene = this[$state].gltf.scene;
     this[$state].sceneIndex = defaultScene === undefined ? 0 : defaultScene;
@@ -79,8 +84,6 @@ export class GltfSampleViewer extends LitElement {
     this[$state].renderingParameters.clearColor = [0, 0, 0, 0];
 
     const luts = {
-      lut_ggx_file: `${GLTF_SAMPLE_RENDERER_DIST}/assets/lut_ggx.png`,
-      lut_charlie_file: `${GLTF_SAMPLE_RENDERER_DIST}/assets/lut_charlie.png`,
       lut_sheen_E_file: `${GLTF_SAMPLE_RENDERER_DIST}/assets/lut_sheen_E.png`
     };
 
@@ -137,7 +140,7 @@ export class GltfSampleViewer extends LitElement {
   private async[$loadEnvironmentFile](url: string):
       Promise<string|ArrayBuffer> {
     if (/\.hdr$/i.test(url)) {
-      return url;
+      return toAbsoluteUrl(url);
     }
 
     // The resource loader can only parse Radiance files, so low-dynamic-range

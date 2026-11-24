@@ -32,7 +32,7 @@ const REPOSITORIES = [
   {
     directory: 'glTF-Sample-Renderer',
     url: 'https://github.com/KhronosGroup/glTF-Sample-Renderer.git',
-    commit: '6e8a3d1aaa6f07e9f1310a488453e21325677786',
+    commit: '5aea1f1cd391f5307eab8b6a70780ef2e2307d72',
   },
   {
     directory: 'vk_gltf_renderer',
