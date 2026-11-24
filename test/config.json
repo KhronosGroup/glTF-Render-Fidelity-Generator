@@ -956,7 +956,8 @@
         "radius": 18.4
       },
       "exclude": [
-        "stellar"
+        "stellar",
+        "rhodonite"
       ]
     },
     {
@@ -1113,7 +1114,8 @@
       },
       "exclude": [
         "stellar",
-        "phasma-viewer"
+        "phasma-viewer",
+        "rhodonite"
       ]
     },
     {
@@ -1184,7 +1186,8 @@
         "radius": 4
       },
       "exclude": [
-        "stellar"
+        "stellar",
+        "rhodonite"
       ]
     },
     {
@@ -1255,7 +1258,8 @@
       },
       "exclude": [
         "stellar",
-        "phasma-viewer"
+        "phasma-viewer",
+        "rhodonite"
       ]
     },
     {
@@ -1797,7 +1801,8 @@
         "height": 512
       },
       "exclude": [
-        "phasma-viewer"
+        "phasma-viewer",
+        "rhodonite"
       ]
     },
     {

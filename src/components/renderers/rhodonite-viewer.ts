@@ -54,7 +54,7 @@ export class RhodoniteViewer extends LitElement {
 
     if (this[$engine] == null) {
       this[$engine] = await Rn.Engine.init({
-        approach: Rn.ProcessApproach.DataTexture,
+        approach: Rn.ProcessApproach.WebGL2,
         canvas,
         notToDisplayRnInfoAtInit: true,
       });
