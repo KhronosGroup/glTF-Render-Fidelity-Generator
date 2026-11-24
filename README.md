@@ -20,6 +20,8 @@ Command                         | Description
 
 ## Setup
 
+> **Note:** This repository stores binary files with [Git LFS](https://git-lfs.com/). Install it and run `git lfs install` once before cloning, otherwise the files are only small pointer files.
+
 ```
 git clone git@github.com:KhronosGroup/glTF-Render-Fidelity-Generator.git
 cd glTF-Render-Fidelity-Generator
