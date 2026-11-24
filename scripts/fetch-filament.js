@@ -34,7 +34,7 @@ const CMGEN_PATH =
     join(FILAMENT_DIR, process.platform === 'win32' ? 'cmgen.exe' : 'cmgen');
 const CMGEN_VERSION_FILE = join(FILAMENT_DIR, 'cmgen.version');
 
-const FILAMENT_VERSION = '1.77.2';
+const FILAMENT_VERSION = '1.81.0';
 
 const isUpToDate = (versionFile) => existsSync(versionFile) &&
     readFileSync(versionFile, 'utf8').trim() === FILAMENT_VERSION;

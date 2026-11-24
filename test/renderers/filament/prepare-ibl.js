@@ -17,7 +17,7 @@
 // scripts/fetch-filament.js as part of `npm run build`.
 
 import {spawnSync} from 'child_process';
-import {existsSync, mkdirSync, rmSync} from 'fs';
+import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'fs';
 import {basename, dirname, extname, join, resolve} from 'path';
 import sharp from 'sharp';
 import {fileURLToPath} from 'url';
@@ -29,14 +29,19 @@ Usage:
 
   node prepare-ibl.js -i <ibl input file> [-vI]
 
-Note: script caches generated IBLs across multiple invocations.
-To force regeneration of the IBL, add the -I flag (be aware that
-this will take longer).`);
+Note: script caches generated IBLs across multiple invocations, and
+regenerates them when cmgen changes version. To force regeneration of
+the IBL, add the -I flag (be aware that this will take longer).`);
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const IBL_DIR = join(SCRIPT_DIR, 'ktx');
 const CMGEN_BIN =
     join(SCRIPT_DIR, process.platform === 'win32' ? 'cmgen.exe' : 'cmgen');
+// Written by scripts/fetch-filament.js next to the cmgen it downloads
+const CMGEN_VERSION_FILE = join(SCRIPT_DIR, 'cmgen.version');
+
+const readVersion = (file) =>
+    existsSync(file) ? readFileSync(file, 'utf8').trim() : null;
 
 let options;
 try {
@@ -77,8 +82,12 @@ const iblExtension = extname(iblInputFile).slice(1).toLowerCase();
 const iblBasename = basename(iblInputFile, extname(iblInputFile));
 const iblOutputPath = join(IBL_DIR, iblBasename);
 const iblFile = join(iblOutputPath, `${iblBasename}_ibl.ktx`);
+// Records the cmgen version that generated this IBL
+const iblVersionFile = join(iblOutputPath, 'cmgen.version');
+const cmgenVersion = readVersion(CMGEN_VERSION_FILE);
 
-if (!options.regenerate && existsSync(iblFile)) {
+if (!options.regenerate && existsSync(iblFile) && cmgenVersion != null &&
+    readVersion(iblVersionFile) === cmgenVersion) {
   // Nothing to do...
   process.exit(0);
 }
@@ -114,4 +123,8 @@ if (result.error != null || result.status !== 0) {
   // Leave no partial IBL behind so the next run retries.
   rmSync(iblOutputPath, {recursive: true, force: true});
   process.exit(1);
+}
+
+if (cmgenVersion != null) {
+  writeFileSync(iblVersionFile, `${cmgenVersion}\n`);
 }
