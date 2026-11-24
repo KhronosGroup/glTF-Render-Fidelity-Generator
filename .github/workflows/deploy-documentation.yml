@@ -46,6 +46,7 @@ jobs:
         mv test/results pages/comparison/
         cp test/results-viewer.html pages/comparison/index.html
         cp -r dist glTF-Sample-Assets pages/
+        cp test/index-redirect.html pages/index.html
         git log -n 1 > pages/VERSION
 
     - name: Deploy to Github Pages
