@@ -15,7 +15,11 @@ jobs:
 
     - uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: '26'
+
+    # npm 10 crashes resolving glTF-Sample-Renderer's peer dependencies
+    - name: Install npm
+      run: npm install -g npm@12
 
     # dspbr-pt and glTF-Sample-Renderer are file: dependencies, so they must
     # be cloned (at the commits pinned in the script) before npm ci
