@@ -35,13 +35,22 @@ export const rendererOffline = async(
 
   const args = rendererArgs.concat([JSON.stringify(renderConfig)])
   // Normalize so the configured path can use either / or \ as separator.
-  const result = spawnSync(normalize(rendererCommand), args);
+  // Renderers can log a lot, so allow more output than the 1 MB default, past
+  // which Node kills the process.
+  const result = spawnSync(
+      normalize(rendererCommand), args, {maxBuffer: 256 * 1024 * 1024});
+
+  // The last lines of output, which usually say why a render failed
+  const outputTail = () =>
+      `${result.stdout ?? ''}\n${result.stderr ?? ''}`.trim().split(/\r?\n/)
+          .slice(-20)
+          .join('\n');
 
   if (result.error) {  // handle issues with the external process
-    console.error(result.error);
-    throw new Error();
+    throw new Error(`${result.error.message}\n${outputTail()}`);
   } else if (result.status != 0) {  // handle renderer issues
-    throw new Error(result.stderr.toString());
+    throw new Error(`exit code ${result.status}${
+        result.signal ? `, signal ${result.signal}` : ''}\n${outputTail()}`);
   } else {  // succceed!
     console.log('done!\n')
     console.log(result.stdout.toString());

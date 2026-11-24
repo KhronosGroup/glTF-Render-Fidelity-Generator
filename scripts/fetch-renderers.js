@@ -37,7 +37,7 @@ const REPOSITORIES = [
   {
     directory: 'vk_gltf_renderer',
     url: 'https://github.com/nvpro-samples/vk_gltf_renderer.git',
-    commit: '10f2de09dfa3dca04f14e485580862f17c05752f',
+    commit: '8c0ef8357b19acd05f5ae988a6c9cb912f39909b',
   },
 ];
 
