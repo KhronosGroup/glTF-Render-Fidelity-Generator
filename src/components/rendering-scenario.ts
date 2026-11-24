@@ -185,6 +185,7 @@ h2 {
   border-radius: 3px;
   padding: 0.25em 0.5em;
   margin: 0;
+  overflow-wrap: anywhere;
 
   background-color: rgba(255, 255, 255, 0.75);
   pointer-events: none;
@@ -204,6 +205,7 @@ h2 {
   display: flex;
   position: relative;
   flex-direction: column;
+  width: min-content;
   object-fit: contain;
   margin: 0.5em;
   transition: transform 0.3s;
