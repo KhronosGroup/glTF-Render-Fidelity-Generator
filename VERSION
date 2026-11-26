@@ -1,0 +1,5 @@
+commit 21b24a12c7299790993a1afe1ec1a069b91faa61
+Author: vineek <nickvitsas@gmail.com>
+Date:   Thu Nov 26 10:43:11 2026 +0200
+
+    FIX filament default pose calculation and re-render affected goldens

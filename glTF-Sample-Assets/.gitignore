@@ -1,0 +1,15 @@
+.DS_Store
+.alg_meta
+.vscode
+*.blend1
+Thumbs.db
+desktop.ini
+*.report.json
+gltf_validator.exe
+*.csv
+metadata.template.json
+
+/util/node_modules
+/util/dist
+/util/package-lock.json
+/util/tsconfig.tsbuildinfo

@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "legal": [
+    {
+      "license": "LicenseRef-Poser-EULA",
+      "licenseUrl": "../../LICENSES/LicenseRef-Poser-EULA.txt",
+      "artist": "Keith Hunter",
+      "year": "2017",
+      "owner": "Smith Micro Software, Inc.",
+      "what": "Everything",
+      "text": "Poser EULA",
+      "icon": ""
+    }
+  ],
+  "tags": [
+    "core",
+    "testing"
+  ],
+  "screenshot": "screenshot/screenshot.gif",
+  "name": "BrainStem",
+  "path": "./Models/BrainStem",
+  "summary": "Animations. Skins.",
+  "createReadme": true
+}
