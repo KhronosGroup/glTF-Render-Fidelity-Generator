@@ -256,6 +256,10 @@ export class FilamentViewer extends LitElement {
       entity.delete();
     }
 
+    // Skinned meshes stay in bind space until the bone matrices are computed.
+    // No animation is applied, so this gives the default pose.
+    asset.getInstance().getAnimator().updateBoneMatrices();
+
     this[$updateSize]();
 
     requestAnimationFrame(() => {
